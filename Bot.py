@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 def get_main_menu():
-    buttons =,]
+    buttons =,
     return types.ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):

@@ -4,8 +4,8 @@ import aiohttp
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 
-API_TOKEN = '8308105524:AAF8BG64FyxOiHFxcxjSUqz5CXGpN6v1p80'
-CRYPTO_TOKEN = '559608:AAVdPFhXVM2jPuYQSUcnwY90RzxIzldnkLh'
+API_TOKEN = '8308105524:AAF8BG64FyxOiHFxcxjSUQz5CXGpN6v1p80'
+CRYPTO_TOKEN = '559608:AAVdPFhXVM2jPuYQSUcnwY9ORzxIzldnkLh'
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)

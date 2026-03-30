@@ -29,10 +29,10 @@ async def bal(m: types.Message):
 async def pay(m: types.Message):
     h = {'Crypto-Pay-API-Token': CRYPTO_TOKEN}
     async with aiohttp.ClientSession() as s:
-        async with s.post('https://pay.crypt.bot/api/createInvoice', headers=h, json={'asset':'USDT','amount':'1'}) as r:
-            res = await r.json()
+async with s.post('https://pay.crypt.bot/api/createInvoice', headers=h, json={'asset':'USDT','amount':'1'}) as r:
+    res = await r.json()
             if res.get('ok'):
-                url = res['result']['pay_url']
+    url = res['result']['pay_url']
                 await m.answer(f"Ссылка на оплату 1 USDT: {url}")
             else:
                 await m.answer("Ошибка API при создании счета.")

@@ -5,7 +5,6 @@ from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 API_TOKEN = '8308105524:AAF8BG64FyxOiHFxcxjSUqz5CXGpN6v1p80'
 CRYPTO_TOKEN = '559608:AAVdPFhXVM2jPuYQSUcnwY9ORzxIzldnkLh'
-'
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)

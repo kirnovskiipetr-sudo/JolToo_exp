@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO)
 bot, dp = Bot(token=API_TOKEN), Dispatcher()
 @dp.message(Command("start"))
 async def start(m: types.Message):
-markup = types.ReplyKeyboardMarkup(keyboard=,],
+markup = types.ReplyKeyboardMarkup(keyboard=,]
 resize_keyboard=True)
 await m.answer("Бот JolToo.exp запущен!", reply_markup=markup)
 @dp.message(F.text == "💰 Кошелек")

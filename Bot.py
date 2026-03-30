@@ -1,19 +1,23 @@
 import logging
-import aiohttp
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+import aiohttp
+
 API_TOKEN = '8308105524:AAF8BG64FyxOiHFxcxjSUqz5CXGpN6v1p80'
-CRYPTO_TOKEN = '559608:AAVdPFhXVM2jPuYQSUcnwY9ORzxIzldnkLh'
+CRYPTO_TOKEN = '559608:AAVdPFhXVM2jPuYQSUcnwY90RzxIzldnkLh'
+
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
+
 def get_main_menu():
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(KeyboardButton("💰 Кошелек JolToo.exp"))
     keyboard.add(KeyboardButton("📥 Пополнить (1 USDT)"), KeyboardButton("📤 Вывести"))
     return keyboard
-    @dp.message_handler(commands=['start'])
+
+@dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     await message.answer("Добро пожаловать в JolToo.exp!", reply_markup=get_main_menu())
 
@@ -32,7 +36,7 @@ async def deposit_crypto(message: types.Message):
                 url = res['result']['pay_url']
                 await message.answer(f"Оплати 1 USDT здесь: {url}")
             else:
-                await message.answer("Ошибка! Проверь CRYPTO_TOKEN в коде.")
+                await message.answer("Ошибка! Проверь CRYPTO_TOKEN.")
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

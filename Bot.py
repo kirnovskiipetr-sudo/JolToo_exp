@@ -13,13 +13,12 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def start(m: types.Message):
-    
-b1 = types.KeyboardButton(text="💰 Кошелек")
-b2 = types.KeyboardButton(text="📥 Пополнить")
-    
+    b1 = types.KeyboardButton(text="💰 Кошелек")
+    b2 = types.KeyboardButton(text="📥 Пополнить")
     nav = types.ReplyKeyboardMarkup(
         keyboard=[[b1, b2]], 
-        resize_keyboard=True)
+        resize_keyboard=True
+    )
     await m.answer("Бот JolToo.exp запущен!", reply_markup=nav)
 
 @dp.message(F.text == "💰 Кошелек")
@@ -30,7 +29,6 @@ async def bal(m: types.Message):
 async def pay(m: types.Message):
     h = {'Crypto-Pay-API-Token': CRYPTO_TOKEN}
     async with aiohttp.ClientSession() as s:
-        "async with" ⬇️
         async with s.post('https://pay.crypt.bot/api/createInvoice', headers=h, json={'asset':'USDT','amount':'1'}) as r:
             res = await r.json()
             if res.get('ok'):
@@ -43,7 +41,7 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
-if name == '__main__':
+if __name__ == '__main__':
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):

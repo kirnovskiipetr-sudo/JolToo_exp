@@ -33,14 +33,13 @@ def portfolio(message):
     markup.add("🛋 Квартиры и дома", "☕️ Кафе и офисы")
     markup.add("✨ Реализованные объекты")
     markup.add("⬅️ Назад в меню")
-
     bot.send_photo(
-    message.chat.id,
-    PHOTO_URL = "https://t.me/c/3865067942/6"
+        
+        message.chat.id,
+        "https://t.me/c/3865067942/6",
+        caption="Пример проекта JolToo.exp"
+    )
 
-
-    caption="Пример проекта JolToo.exp"
-)
      bot.send_message(  
      message.chat.id,
         "📂 Портфолио JolToo.exp\n"

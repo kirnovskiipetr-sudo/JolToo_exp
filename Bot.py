@@ -1,131 +1,105 @@
 import telebot
 from telebot import types
 import os
+import threading
+from flask import Flask
 
-# Исправлено получение токена: TOKEN = "ваш_токен" или через переменную окружения
+# Настройка мини-сервера для Render (чтобы не было ошибки портов)
+app = Flask('')
+@app.route('/')
+def home():
+    return "Bot is Live!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = threading.Thread(target=run)
+    t.start()
+
+# --- ОСНОВНОЙ КОД БОТА ---
 TOKEN = "8308105524:AAF4jlu0PGjpFQlylmiillnZSBNCmkUyWfI"
-
 bot = telebot.TeleBot(TOKEN)
 
-# --- ГЛАВНОЕ МЕНЮ ---
 def main_menu():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add("🎨 Наши работы", "🏠 О нас")
     markup.add("💰 Цены", "🎁 Розыгрыш")
-    markup.add("📞 Связаться с дизайнером")
-    markup.add("📝 Оставить заявку")
+    markup.add("📞 Связаться с дизайнером", "📝 Оставить заявку")
     return markup
 
-# --- СТАРТ ---
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(
         message.chat.id,
-        "👋 Добро пожаловать в JolToo.exp!\n"
-        "Мы создаем интерьеры, которые вдохновляют.\n\n"
-        "Чем я могу вам помочь? 👇",
+        "👋 Здравствуйте! Вас приветствует бот JolToo.exp!\n\n"
+        "Выберите интересующий раздел в меню 👇",
         reply_markup=main_menu()
     )
 
-# --- НАШИ РАБОТЫ (ПОРТФОЛИО) ---
 @bot.message_handler(func=lambda m: m.text == "🎨 Наши работы")
 def portfolio(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("✨ Реализованные объекты")
-    markup.add("⬅️ Назад в меню")
+    markup.add("🖼 Дизайн и Лого", "📹 Видео и Reels")
+    markup.add("✨ Реализованные объекты", "⬅️ Назад в меню")
+    bot.send_message(message.chat.id, "📁 Выберите категорию проектов:", reply_markup=markup)
 
-    bot.send_photo(
-        message.chat.id,
-        "https://t.me/c/3865067942/6",
-        caption="Пример проекта JolToo.exp"
-    )
-
-    bot.send_message(
-        message.chat.id,
-        "📂 Портфолио JolToo.exp\nВыберите категорию:",
-        reply_markup=markup
-    )
-
-# --- О НАС ---
 @bot.message_handler(func=lambda m: m.text == "🏠 О нас")
 def about(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("👨‍🎨 Наша команда", "📝 Этапы работы")
-    markup.add("⬅️ Назад в меню")
-
     bot.send_message(
         message.chat.id,
-        "✨ Коротко о нашей студии\n"
-        "Мы создаем стильные и функциональные интерьеры.\n"
-        "Работаем по договору и соблюдаем сроки.",
-        reply_markup=markup
+        "🏠 **О проекте JolToo.exp**\n\n"
+        "Мы — студия креативного контента. Наша цель: делать ваш бренд узнаваемым.\n\n"
+        "👩‍🎨 **О владелице:**\n"
+        "Проект основан профессиональным дизайнером. Мы работаем на результат!",
+        parse_mode="Markdown"
     )
 
-# --- ЦЕНЫ ---
 @bot.message_handler(func=lambda m: m.text == "💰 Цены")
 def prices(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("🧮 Рассчитать проект", "📥 Скачать прайс-лист")
-    markup.add("⬅️ Назад в меню")
-
-    bot.send_message(
-        message.chat.id,
-        "📊 Стоимость услуг:\n\n"
-        "1️⃣ Планировка — от 10$/м²\n"
-        "2️⃣ Эскиз — от 20$/м²\n"
-        "3️⃣ Полный дизайн — от 40$/м²\n\n"
-        "Нажмите ниже для расчета 👇",
-        reply_markup=markup
+    price_text = (
+        "🚀 **Прайс JolToo.exp**\n\n"
+        "🔹 **PACK: CORE — $100** (База)\n"
+        "🔹 **PACK: FLOW — $250** (Актив)\n"
+        "🔹 **PACK: GOD MODE — от $400** (Топ)\n\n"
+        "⚡️ **Поштучно:**\n"
+        "• Art — $20 | Video — $40 | Logo — $80"
     )
+    bot.send_message(message.chat.id, price_text, parse_mode="Markdown")
 
-# --- РОЗЫГРЫШ ---
 @bot.message_handler(func=lambda m: m.text == "🎁 Розыгрыш")
 def giveaway(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("✅ Участвовать", "📜 Полные правила")
-    markup.add("⬅️ Назад в меню")
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("📢 Наш Канал", url="https://t.me/+z18RcNUVOp9kNWQy"))
+    bot.send_message(message.chat.id, "🎁 Подпишись на канал, чтобы участвовать!", reply_markup=markup)
 
-    bot.send_message(
-        message.chat.id,
-        "🎉 Розыгрыш!\n\n"
-        "Выиграй бесплатную консультацию.\n\n"
-        "Условия:\n"
-        "1. Подписка на канал\n"
-        "2. Нажать участвовать\n\n"
-        "Итоги скоро!",
-        reply_markup=markup
+@bot.message_handler(func=lambda m: m.text == "📞 Связаться с дизайнером")
+def designer_contacts(message):
+    contacts = (
+        "👨‍🎨 **Контакты JolToo.exp:**\n\n"
+        "✈️ Telegram: [Написать](https://t.me/joltooexp)\n"
+        "💬 WhatsApp: [Написать](https://wa.me/996502882882)\n"
+        "📸 Instagram: [Профиль](https://www.instagram.com/joltoo.exp?igsh=MWpkYWkycTJ4NDFsbw==)"
     )
+    bot.send_message(message.chat.id, contacts, parse_mode="Markdown", disable_web_page_preview=True)
 
-# --- КНОПКА НАЗАД ---
+@bot.message_handler(func=lambda m: m.text == "📝 Оставить заявку")
+def application(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(types.KeyboardButton("📱 Отправить свои данные", request_contact=True), "⬅️ Назад в меню")
+    bot.send_message(message.chat.id, "Нажмите кнопку ниже, чтобы мы могли связаться с вами!", reply_markup=markup)
+
 @bot.message_handler(func=lambda m: m.text == "⬅️ Назад в меню")
-def back(message):
-    bot.send_message(
-        message.chat.id,
-        "Главное меню 👇",
-        reply_markup=main_menu()
-    )
+def back_home(message):
+    bot.send_message(message.chat.id, "Главное меню 👇", reply_markup=main_menu())
 
-# --- ПОЛУЧЕНИЕ НОМЕРА ---
 @bot.message_handler(content_types=['contact'])
-def get_contact(message):
-    phone = message.contact.phone_number
-    user_name = message.from_user.first_name
-
-    ADMIN_ID = 8668859962  # Твой ID подставил сюда
-
-    # отправка админу
-    bot.send_message(
-        ADMIN_ID,
-        f"🔥 Новый клиент!\n\nИмя: {user_name}\nТелефон: {phone}"
-    )
-
-    # ответ пользователю
-    bot.send_message(
-        message.chat.id,
-        "✅ Спасибо! Мы скоро с вами свяжемся."
-    )
+def contact_handler(message):
+    bot.send_message(8668859962, f"🔥 **ЗАЯВКА!**\nИмя: {message.contact.first_name}\nТел: {message.contact.phone_number}")
+    bot.send_message(message.chat.id, "✅ Мы получили данные и скоро свяжемся с вами!", reply_markup=main_menu())
 
 # --- ЗАПУСК ---
 if __name__ == "__main__":
-    print("Бот запущен...")
+    keep_alive() # Запуск фонового сервера для Render
+    print("Бот JolToo запущен!")
     bot.polling(none_stop=True)

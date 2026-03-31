@@ -4,8 +4,9 @@ import os
 import threading
 from flask import Flask
 
-# Настройка мини-сервера для Render (чтобы не было ошибки портов)
+# Мини-сервер для Render (чтобы не было ошибки портов)
 app = Flask('')
+
 @app.route('/')
 def home():
     return "Bot is Live!"
@@ -17,7 +18,7 @@ def keep_alive():
     t = threading.Thread(target=run)
     t.start()
 
-# --- ОСНОВНОЙ КОД БОТА ---
+# --- ОСНОВНОЙ КОД БОТА JolToo.exp ---
 TOKEN = "8308105524:AAF4jlu0PGjpFQlylmiillnZSBNCmkUyWfI"
 bot = telebot.TeleBot(TOKEN)
 
@@ -40,20 +41,14 @@ def start(message):
 @bot.message_handler(func=lambda m: m.text == "🎨 Наши работы")
 def portfolio(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("🖼 Дизайн и Лого", "📹 Видео и Reels")
-        markup.add("✨ Реализованные объекты", "⬅️ Назад в меню")
+    markup.add("✨ Реализованные объекты", "⬅️ Назад в меню")
     bot.send_message(message.chat.id, "📁 Выберите категорию проектов:", reply_markup=markup)
 
-@bot.message_handler(func=lambda m: m.text == "✨ Реализованные объекты")
-def real_objects(message):
+@bot.message_handler(func=lambda m: m.text == "🏠 О нас")
+def about(message):
     bot.send_message(
-        message.chat.id, 
-        "🏗 **Наши реализованные объекты**\n\n"
-        "Раздел JolToo.exp находится в разработке. Скоро здесь появится галерея наших лучших проектов!\n\n"
-        "Следите за обновлениями!",
-        parse_mode="Markdown"
-    )
-
+        message.chat.id,
+        "🏠 **О проекте JolToo.exp**\n\n"
         "Мы — студия креативного контента. Наша цель: делать ваш бренд узнаваемым.\n\n"
         "👩‍🎨 **О владелице:**\n"
         "Проект основан профессиональным дизайнером. Мы работаем на результат!",
@@ -64,9 +59,9 @@ def real_objects(message):
 def prices(message):
     price_text = (
         "🚀 **Прайс JolToo.exp**\n\n"
-        "🔹 **PACK: CORE — $100** (База)\n"
-        "🔹 **PACK: FLOW — $250** (Актив)\n"
-        "🔹 **PACK: GOD MODE — от $400** (Топ)\n\n"
+        "🔹 **PACK: CORE — $100**\n"
+        "🔹 **PACK: FLOW — $250**\n"
+        "🔹 **PACK: GOD MODE — от $400**\n\n"
         "⚡️ **Поштучно:**\n"
         "• Art — $20 | Video — $40 | Logo — $80"
     )
@@ -94,6 +89,10 @@ def application(message):
     markup.add(types.KeyboardButton("📱 Отправить свои данные", request_contact=True), "⬅️ Назад в меню")
     bot.send_message(message.chat.id, "Нажмите кнопку ниже, чтобы мы могли связаться с вами!", reply_markup=markup)
 
+@bot.message_handler(func=lambda m: m.text == "✨ Реализованные объекты")
+def real_objects(message):
+    bot.send_message(message.chat.id, "🏗 **Раздел в разработке.**\nСкоро здесь будет галерея объектов!", parse_mode="Markdown")
+
 @bot.message_handler(func=lambda m: m.text == "⬅️ Назад в меню")
 def back_home(message):
     bot.send_message(message.chat.id, "Главное меню 👇", reply_markup=main_menu())
@@ -105,6 +104,6 @@ def contact_handler(message):
 
 # --- ЗАПУСК ---
 if __name__ == "__main__":
-    keep_alive() # Запуск фонового сервера для Render
+    keep_alive()
     print("Бот JolToo запущен!")
     bot.polling(none_stop=True)

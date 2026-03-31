@@ -41,14 +41,19 @@ def start(message):
 def portfolio(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add("🖼 Дизайн и Лого", "📹 Видео и Reels")
-    markup.add("✨ Реализованные объекты", "⬅️ Назад в меню")
+        markup.add("✨ Реализованные объекты", "⬅️ Назад в меню")
     bot.send_message(message.chat.id, "📁 Выберите категорию проектов:", reply_markup=markup)
 
-@bot.message_handler(func=lambda m: m.text == "🏠 О нас")
-def about(message):
+@bot.message_handler(func=lambda m: m.text == "✨ Реализованные объекты")
+def real_objects(message):
     bot.send_message(
-        message.chat.id,
-        "🏠 **О проекте JolToo.exp**\n\n"
+        message.chat.id, 
+        "🏗 **Наши реализованные объекты**\n\n"
+        "Раздел JolToo.exp находится в разработке. Скоро здесь появится галерея наших лучших проектов!\n\n"
+        "Следите за обновлениями!",
+        parse_mode="Markdown"
+    )
+
         "Мы — студия креативного контента. Наша цель: делать ваш бренд узнаваемым.\n\n"
         "👩‍🎨 **О владелице:**\n"
         "Проект основан профессиональным дизайнером. Мы работаем на результат!",

@@ -28,16 +28,21 @@ def start(message):
 
 # --- НАШИ РАБОТЫ ---
 @bot.message_handler(func=lambda m: m.text == "🎨 Наши работы")
-def portfolio(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("🛋 Квартиры и дома", "☕️ Кафе и офисы")
+    def portfolio(message):
+     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add("✨ Реализованные объекты")
     markup.add("⬅️ Назад в меню")
+
     bot.send_photo(
-        
         message.chat.id,
         "https://t.me/c/3865067942/6",
         caption="Пример проекта JolToo.exp"
+    )
+
+    bot.send_message(
+        message.chat.id,
+        "📂 Портфолио JolToo.exp\nВыберите категорию:",
+        reply_markup=markup
     )
 
      bot.send_message(  

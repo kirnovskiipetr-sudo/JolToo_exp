@@ -1,45 +1,135 @@
-import asyncio
-import logging
-import aiohttp
-from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import Command
+import telebot
+from telebot import types
+import os
 
-API_TOKEN = '8308105524:AAF8BG64FyxOiHFxcxjSUQz5CXGpN6v1p80'
-CRYPTO_TOKEN = '559608:AAVdPFhXVM2jPuYQSUcnwY9ORzxIzldnkLh'
+TOKEN = os.getenv ("8308105524:AAF4jlu0PGjpFQlylmiillnZSBNCmkUyWfI")
 
-logging.basicConfig(level=logging.INFO)
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher()
+bot = telebot.TeleBot(TOKEN)
 
-@dp.message(Command("start"))
-async def start(m: types.Message):
-    b1 = types.KeyboardButton(text="💰 Кошелек")
-    b2 = types.KeyboardButton(text="📥 Пополнить")
-    nav = types.ReplyKeyboardMarkup(
-        keyboard=[[b1, b2]], 
-        resize_keyboard=True
+# --- ГЛАВНОЕ МЕНЮ ---
+def main_menu():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("🎨 Наши работы", "🏠 О нас")
+    markup.add("💰 Цены", "🎁 Розыгрыш")
+    markup.add("📞 Связаться с дизайнером")
+    markup.add("📝 Оставить заявку")
+    return markup
+    
+    # --- СТАРТ ---
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(
+        message.chat.id,
+        "👋 Добро пожаловать в JolToo.exp!\n"
+        "Мы создаем интерьеры, которые вдохновляют.\n\n"
+        "Чем я могу вам помочь? 👇",
+        reply_markup=main_menu()
     )
-    await m.answer("Бот JolToo.exp запущен!", reply_markup=nav)
 
-@dp.message(F.text == "💰 Кошелек")
-async def bal(m: types.Message):
-    await m.answer("Ваш баланс: 0.00 USDT")
+# --- НАШИ РАБОТЫ ---
+@bot.message_handler(func=lambda m: m.text == "🎨 Наши работы")
+def portfolio(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("🛋 Квартиры и дома", "☕️ Кафе и офисы")
+    markup.add("✨ Реализованные объекты")
+    markup.add("⬅️ Назад в меню")
 
-@dp.message(F.text == "📥 Пополнить")
-async def pay(m: types.Message):
-    h = {'Crypto-Pay-API-Token': CRYPTO_TOKEN}
-    async with aiohttp.ClientSession() as s:
-        async with s.post('https://pay.crypt.bot/api/createInvoice', headers=h, json={'asset':'USDT','amount':'1'}) as r:
-            res = await r.json()
-            if res.get('ok'):
-                url = res['result']['pay_url']
-                await m.answer(f"Ссылка на оплату 1 USDT: {url}")
-            else:
-                await m.answer("Ошибка API.")
+    bot.send_photo(
+    message.chat.id,
+    "ССЫЛКА_НА_ФОТО",https://t.me/c/3865067942/6
+    caption="Пример проекта JolToo.exp"
+)
+     bot.send_message(  
+     message.chat.id,
+        "📂 Портфолио JolToo.exp\n"
+        "Выберите категорию:",
+        reply_markup=markup
+    )
+    
+    # --- О НАС ---
+@bot.message_handler(func=lambda m: m.text == "🏠 О нас")
+def about(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("👨‍🎨 Наша команда", "📝 Этапы работы")
+    markup.add("⬅️ Назад в меню")
 
-async def main():
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
+    bot.send_message(
+        message.chat.id,
+        "✨ Коротко о нашей студии\n"
+        "Мы создаем стильные и функциональные интерьеры.\n"
+        "Работаем по договору и соблюдаем сроки.",
+        reply_markup=markup
+    )
 
-if __name__ == '__main__':
-    asyncio.run(main())
+
+# --- ЦЕНЫ ---
+@bot.message_handler(func=lambda m: m.text == "💰 Цены")
+def prices(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("🧮 Рассчитать проект", "📥 Скачать прайс-лист")
+    markup.add("⬅️ Назад в меню")
+
+    bot.send_message(
+        message.chat.id,
+        "📊 Стоимость услуг:\n\n"
+        "1️⃣ Планировка — от 10$/м²\n"
+        "2️⃣ Эскиз — от 20$/м²\n"
+        "3️⃣ Полный дизайн — от 40$/м²\n\n"
+        "Нажмите ниже для расчета 👇",
+        reply_markup=markup
+    )
+
+
+# --- РОЗЫГРЫШ ---
+@bot.message_handler(func=lambda m: m.text == "🎁 Розыгрыш")
+def giveaway(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("✅ Участвовать", "📜 Полные правила")
+    markup.add("⬅️ Назад в меню")
+
+    bot.send_message(
+        message.chat.id,
+        "🎉 Розыгрыш!\n\n"
+        "Выиграй бесплатную консультацию.\n\n"
+        "Условия:\n"
+        "1. Подписка на канал\n"
+        "2. Нажать участвовать\n\n"
+        "Итоги скоро!",
+        reply_markup=markup
+    )
+
+
+# --- КНОПКА НАЗАД ---
+@bot.message_handler(func=lambda m: m.text == "⬅️ Назад в меню")
+def back(message):
+    bot.send_message(
+        message.chat.id,
+        "Главное меню 👇",
+        reply_markup=main_menu()
+    )
+
+
+# --- ПОЛУЧЕНИЕ НОМЕРА ---
+@bot.message_handler(content_types=['contact'])
+def get_contact(message):
+    phone = message.contact.phone_number
+    user_name = message.from_user.first_name
+
+    ADMIN_ID = 123456789  # ← ВСТАВЬ СВОЙ ID
+
+    # отправка тебе
+    bot.send_message(
+        ADMIN_ID,8668859962
+        f"🔥 Новый клиент!\n\nИмя: {user_name}\nТелефон: {phone}"
+    )
+
+    # ответ пользователю
+    bot.send_message(
+        message.chat.id,
+        "✅ Спасибо! Мы скоро с вами свяжемся."
+    )
+
+
+# --- ЗАПУСК ---
+print("Бот запущен...")
+bot.polling(none_stop=True)

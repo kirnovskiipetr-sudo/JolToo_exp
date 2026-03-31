@@ -36,7 +36,8 @@ def portfolio(message):
 
     bot.send_photo(
     message.chat.id,
-    "ССЫЛКА_НА_ФОТО", "https://t.me/c/3865067942/6"
+    PHOTO_URL = "https://t.me/c/3865067942/6"
+
 
     caption="Пример проекта JolToo.exp"
 )

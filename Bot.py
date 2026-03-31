@@ -2,7 +2,8 @@ import telebot
 from telebot import types
 import os
 
-TOKEN = os.getenv ("8308105524:AAF4jlu0PGjpFQlylmiillnZSBNCmkUyWfI")
+# Исправлено получение токена: TOKEN = "ваш_токен" или через переменную окружения
+TOKEN = "8308105524:AAF4jlu0PGjpFQlylmiillnZSBNCmkUyWfI"
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -14,8 +15,8 @@ def main_menu():
     markup.add("📞 Связаться с дизайнером")
     markup.add("📝 Оставить заявку")
     return markup
-    
-    # --- СТАРТ ---
+
+# --- СТАРТ ---
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(
@@ -26,10 +27,10 @@ def start(message):
         reply_markup=main_menu()
     )
 
-# --- НАШИ РАБОТЫ ---
+# --- НАШИ РАБОТЫ (ПОРТФОЛИО) ---
 @bot.message_handler(func=lambda m: m.text == "🎨 Наши работы")
-    def portfolio(message):
-     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+def portfolio(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add("✨ Реализованные объекты")
     markup.add("⬅️ Назад в меню")
 
@@ -45,14 +46,7 @@ def start(message):
         reply_markup=markup
     )
 
-     bot.send_message(  
-     message.chat.id,
-        "📂 Портфолио JolToo.exp\n"
-        "Выберите категорию:",
-        reply_markup=markup
-    )
-    
-    # --- О НАС ---
+# --- О НАС ---
 @bot.message_handler(func=lambda m: m.text == "🏠 О нас")
 def about(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -66,7 +60,6 @@ def about(message):
         "Работаем по договору и соблюдаем сроки.",
         reply_markup=markup
     )
-
 
 # --- ЦЕНЫ ---
 @bot.message_handler(func=lambda m: m.text == "💰 Цены")
@@ -84,7 +77,6 @@ def prices(message):
         "Нажмите ниже для расчета 👇",
         reply_markup=markup
     )
-
 
 # --- РОЗЫГРЫШ ---
 @bot.message_handler(func=lambda m: m.text == "🎁 Розыгрыш")
@@ -104,7 +96,6 @@ def giveaway(message):
         reply_markup=markup
     )
 
-
 # --- КНОПКА НАЗАД ---
 @bot.message_handler(func=lambda m: m.text == "⬅️ Назад в меню")
 def back(message):
@@ -114,18 +105,17 @@ def back(message):
         reply_markup=main_menu()
     )
 
-
 # --- ПОЛУЧЕНИЕ НОМЕРА ---
 @bot.message_handler(content_types=['contact'])
 def get_contact(message):
     phone = message.contact.phone_number
     user_name = message.from_user.first_name
 
-    ADMIN_ID = 123456789  # ← ВСТАВЬ СВОЙ ID
+    ADMIN_ID = 8668859962  # Твой ID подставил сюда
 
-    # отправка тебе
+    # отправка админу
     bot.send_message(
-        ADMIN_ID,8668859962
+        ADMIN_ID,
         f"🔥 Новый клиент!\n\nИмя: {user_name}\nТелефон: {phone}"
     )
 
@@ -135,7 +125,7 @@ def get_contact(message):
         "✅ Спасибо! Мы скоро с вами свяжемся."
     )
 
-
 # --- ЗАПУСК ---
-print("Бот запущен...")
-bot.polling(none_stop=True)
+if __name__ == "__main__":
+    print("Бот запущен...")
+    bot.polling(none_stop=True)

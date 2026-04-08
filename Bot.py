@@ -4,9 +4,8 @@ import os
 import threading
 from flask import Flask
 
-# Мини-сервер для Render (чтобы не было ошибки портов)
+# --- МИНИ-СЕРВЕР ДЛЯ RENDER ---
 app = Flask('')
-
 @app.route('/')
 def home():
     return "Bot is Live!"
@@ -18,7 +17,7 @@ def keep_alive():
     t = threading.Thread(target=run)
     t.start()
 
-# --- ОСНОВНОЙ КОД БОТА JolToo.exp ---
+# --- КОД БОТА JolToo.exp ---
 TOKEN = "8308105524:AAF4jlu0PGjpFQlylmiillnZSBNCmkUyWfI"
 bot = telebot.TeleBot(TOKEN)
 
@@ -31,79 +30,68 @@ def main_menu():
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(
-        message.chat.id,
-        "👋 Здравствуйте! Вас приветствует бот JolToo.exp!\n\n"
-        "Выберите интересующий раздел в меню 👇",
-        reply_markup=main_menu()
-    )
+    bot.send_message(message.chat.id, "👋 Привет! Это JolToo.exp.\nИзучите наше портфолио или закажите проект прямо здесь 👇", reply_markup=main_menu())
 
+# --- РАЗДЕЛ НАШИ РАБОТЫ (КАТЕГОРИИ) ---
 @bot.message_handler(func=lambda m: m.text == "🎨 Наши работы")
-def portfolio(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add("✨ Реализованные объекты", "⬅️ Назад в меню")
-    bot.send_message(message.chat.id, "📁 Выберите категорию проектов:", reply_markup=markup)
+def portfolio_categories(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    markup.add("🌐 Сайты", "🤖 Боты")
+    markup.add("🖼 Баннеры", "💎 Под ключ")
+    markup.add("⬅️ Назад в меню")
+    bot.send_message(message.chat.id, "Выберите категорию проектов:", reply_markup=markup)
 
-@bot.message_handler(func=lambda m: m.text == "🏠 О нас")
-def about(message):
-    bot.send_message(
-        message.chat.id,
-        "🏠 **О проекте JolToo.exp**\n\n"
-        "Мы — студия креативного контента. Наша цель: делать ваш бренд узнаваемым.\n\n"
-        "👩‍🎨 **О владелице:**\n"
-        "Проект основан профессиональным дизайнером. Мы работаем на результат!",
-        parse_mode="Markdown"
-    )
+# --- ЛОГИКА ДЛЯ КАТЕГОРИЙ ---
 
-@bot.message_handler(func=lambda m: m.text == "💰 Цены")
-def prices(message):
-    price_text = (
-        "🚀 **Прайс JolToo.exp**\n\n"
-        "🔹 **PACK: CORE — $100**\n"
-        "🔹 **PACK: FLOW — $250**\n"
-        "🔹 **PACK: GOD MODE — от $400**\n\n"
-        "⚡️ **Поштучно:**\n"
-        "• Art — $20 | Video — $40 | Logo — $80"
-    )
-    bot.send_message(message.chat.id, price_text, parse_mode="Markdown")
+@bot.message_handler(func=lambda m: m.text == "🌐 Сайты")
+def category_sites(message):
+    # Замени "ССЫЛКА" на реальную ссылку на фото работы
+    photo_url = "https://i.ibb.co/vz6007L/joltoo-exp.jpg" 
+    caption = "🌐 **Наши сайты**\n\nРазработка современных лендингов и многостраничников.\n\n✅ Адаптивный дизайн\n✅ Высокая скорость загрузки"
+    bot.send_photo(message.chat.id, photo_url, caption=caption, parse_mode="Markdown")
 
-@bot.message_handler(func=lambda m: m.text == "🎁 Розыгрыш")
-def giveaway(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("📢 Наш Канал", url="https://t.me/+z18RcNUVOp9kNWQy"))
-    bot.send_message(message.chat.id, "🎁 Подпишись на канал, чтобы участвовать!", reply_markup=markup)
+@bot.message_handler(func=lambda m: m.text == "🤖 Боты")
+def category_bots(message):
+    photo_url = "https://i.ibb.co/vz6007L/joltoo-exp.jpg"
+    caption = "🤖 **Telegram боты**\n\nСоздаем ботов-визиток, магазинов и систем автоматизации.\n\n✅ Интеграция с платежами\n✅ Удобное меню"
+    bot.send_photo(message.chat.id, photo_url, caption=caption, parse_mode="Markdown")
 
-@bot.message_handler(func=lambda m: m.text == "📞 Связаться с дизайнером")
-def designer_contacts(message):
-    contacts = (
-        "👨‍🎨 **Контакты JolToo.exp:**\n\n"
-        "✈️ Telegram: [Написать](https://t.me/joltooexp)\n"
-        "💬 WhatsApp: [Написать](https://wa.me/996502882882)\n"
-        "📸 Instagram: [Профиль](https://www.instagram.com/joltoo.exp?igsh=MWpkYWkycTJ4NDFsbw==)"
-    )
-    bot.send_message(message.chat.id, contacts, parse_mode="Markdown", disable_web_page_preview=True)
+@bot.message_handler(func=lambda m: m.text == "🖼 Баннеры")
+def category_banners(message):
+    photo_url = "https://i.ibb.co/vz6007L/joltoo-exp.jpg"
+    caption = "🖼 **Дизайн баннеров**\n\nКреативы для соцсетей и рекламы, которые привлекают внимание.\n\n✅ Уникальный стиль\n✅ Продающие смыслы"
+    bot.send_photo(message.chat.id, photo_url, caption=caption, parse_mode="Markdown")
 
-@bot.message_handler(func=lambda m: m.text == "📝 Оставить заявку")
-def application(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    markup.add(types.KeyboardButton("📱 Отправить свои данные", request_contact=True), "⬅️ Назад в меню")
-    bot.send_message(message.chat.id, "Нажмите кнопку ниже, чтобы мы могли связаться с вами!", reply_markup=markup)
+@bot.message_handler(func=lambda m: m.text == "💎 Под ключ")
+def category_full(message):
+    photo_url = "https://i.ibb.co/vz6007L/joltoo-exp.jpg"
+    caption = "💎 **Проекты под ключ**\n\nПолная упаковка вашего бренда: от логотипа до сайта и бота.\n\n✅ Единый стиль\n✅ Максимальная выгода"
+    bot.send_photo(message.chat.id, photo_url, caption=caption, parse_mode="Markdown")
 
-@bot.message_handler(func=lambda m: m.text == "✨ Реализованные объекты")
-def real_objects(message):
-    bot.send_message(message.chat.id, "🏗 **Раздел в разработке.**\nСкоро здесь будет галерея объектов!", parse_mode="Markdown")
-
+# --- ОСТАЛЬНЫЕ ФУНКЦИИ ---
 @bot.message_handler(func=lambda m: m.text == "⬅️ Назад в меню")
 def back_home(message):
     bot.send_message(message.chat.id, "Главное меню 👇", reply_markup=main_menu())
 
+@bot.message_handler(func=lambda m: m.text == "💰 Цены")
+def prices(message):
+    bot.send_message(message.chat.id, "🔹 CORE — $100\n🔹 FLOW — $250\n🔹 GOD MODE — от $400", parse_mode="Markdown")
+
+@bot.message_handler(func=lambda m: m.text == "📞 Связаться с дизайнером")
+def designer_contacts(message):
+    bot.send_message(message.chat.id, "✈️ Telegram: @joltooexp\n💬 WhatsApp: https://wa.me/996502882882")
+
+@bot.message_handler(func=lambda m: m.text == "📝 Оставить заявку")
+def application(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(types.KeyboardButton("📱 Отправить контакт", request_contact=True), "⬅️ Назад в меню")
+    bot.send_message(message.chat.id, "Нажмите кнопку, чтобы мы связались с вами!", reply_markup=markup)
+
 @bot.message_handler(content_types=['contact'])
 def contact_handler(message):
-    bot.send_message(8668859962, f"🔥 **ЗАЯВКА!**\nИмя: {message.contact.first_name}\nТел: {message.contact.phone_number}")
-    bot.send_message(message.chat.id, "✅ Мы получили данные и скоро свяжемся с вами!", reply_markup=main_menu())
+    bot.send_message(8668859962, f"🔥 ЗАЯВКА!\nИмя: {message.contact.first_name}\nТел: {message.contact.phone_number}")
+    bot.send_message(message.chat.id, "✅ Получили! Скоро свяжемся.", reply_markup=main_menu())
 
-# --- ЗАПУСК ---
 if __name__ == "__main__":
     keep_alive()
-    print("Бот JolToo запущен!")
     bot.polling(none_stop=True)
